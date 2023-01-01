@@ -9,7 +9,11 @@ import SwiftUI
 
 struct ToDoListRow: View {
     
+   
+    
     @ObservedObject var todoItem: ToDoItem
+    
+    @Environment(\.managedObjectContext) var context
     
     var body: some View {
         Toggle(isOn: self.$todoItem.isComplete) {
@@ -27,6 +31,11 @@ struct ToDoListRow: View {
                     .foregroundColor(self.color(for: self.todoItem.priority))
             }
         }.toggleStyle(CheckboxStyle())
+        .onChange(of: todoItem, perform: { _ in
+                if self.context.hasChanges {
+                    try? self.context.save()
+                }
+            })
     }
     
     private func color(for priority: Priority) -> Color {
@@ -40,8 +49,4 @@ struct ToDoListRow: View {
 
 }
 
-struct ToDoListRow_Previews: PreviewProvider {
-    static var previews: some View {
-        ToDoListRow(todoItem: ToDoItem.example)
-    }
-}
+

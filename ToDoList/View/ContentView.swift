@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-        
-    @State var todoItems: [ToDoItem] = []
+
+    @Environment(\.managedObjectContext) var context
+    
+    @FetchRequest(
+        entity: ToDoItem.entity(),
+        sortDescriptors: [ NSSortDescriptor(keyPath: \ToDoItem.priorityNum, ascending: false) ])
+    var todoItems: FetchedResults<ToDoItem>
+    
     
     @State private var newItemName: String = ""
     @State private var newItemPriority: Priority = .normal
@@ -68,13 +74,28 @@ struct ContentView: View {
                         self.showNewTask = false
                     }
                 
-                NewToDoView(isShow: $showNewTask, todoItems: $todoItems, name: "",when:.later, priority: .normal)
+                NewToDoView(isShow: $showNewTask,  name: "",when:.later, priority: .normal)
                     .transition(.move(edge: .bottom))
                     .animation(.interpolatingSpring(stiffness: 200.0, damping: 25.0, initialVelocity: 10.0), value: showNewTask)
             }
         }
     }
     
+    private func deleteTask(indexSet: IndexSet) {
+        for index in indexSet {
+            let itemToDelete = todoItems[index]
+            context.delete(itemToDelete)
+        }
+
+        DispatchQueue.main.async {
+            do {
+                try context.save()
+
+            } catch {
+                print(error)
+            }
+        }
+    }
 
 }
 

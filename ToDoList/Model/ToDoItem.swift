@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 enum Priority: Int {
     case low = 0
@@ -58,23 +59,60 @@ enum When: Int {
     }
     
 }
-class ToDoItem: ObservableObject, Identifiable {
-    var id = UUID()
-    @Published var name: String = ""
-    @Published var when: When = .later
-    @Published var priority: Priority = .normal
-    @Published var isComplete: Bool = false
-    
-    init(name: String,when: When, priority: Priority = .normal, isComplete: Bool = false) {
-        self.name = name
-        self.when = when
-        self.priority = priority
-        self.isComplete = isComplete
+
+public class ToDoItem: NSManagedObject {
+    @NSManaged public var id: UUID
+    @NSManaged public var name: String
+    @NSManaged public var priorityNum: Int32
+    @NSManaged public var whenNum: Int32
+    @NSManaged public var isComplete: Bool
+}
+
+extension ToDoItem: Identifiable {
+
+    var priority: Priority {
+        get {
+            return Priority(rawValue: Int(priorityNum)) ?? .normal
+        }
+
+        set {
+            self.priorityNum = Int32(newValue.rawValue)
+        }
     }
     
+    var when: When {
+        get {
+            return When(rawValue: Int(whenNum)) ?? .later
+        }
 
+        set {
+            self.whenNum = Int32(newValue.rawValue)
+        }
+    }
     
     
-    static let example = ToDoItem(name: "Etiam condimentum molestie erat, at egestas sem aliquam eget. Aliquam sodales, dolor eu fringilla rutrum, elit massa suscipit mauris, a lobortis eros est sit amet mi. Pellentesque et sagittis massa. Donec vitae ex ut nibh hendrerit sagittis nec eget nunc. Aliquam erat volutpat. Proin eu augue eget velit convallis facilisis. Vivamus vel ultrices est. Nulla a elit at enim eleifend scelerisque. Duis egestas lorem a nunc rhoncus, ac consectetur est posuere. Aenean et dignissim nunc, ac porta diam. Cras pretium a libero pretium blandit.",when: .now, priority: .normal, isComplete: false)
+   
 }
+
+
+
+//class ToDoItem: ObservableObject, Identifiable {
+//    var id = UUID()
+//    @Published var name: String = ""
+//    @Published var when: When = .later
+//    @Published var priority: Priority = .normal
+//    @Published var isComplete: Bool = false
+//
+//    init(name: String,when: When, priority: Priority = .normal, isComplete: Bool = false) {
+//        self.name = name
+//        self.when = when
+//        self.priority = priority
+//        self.isComplete = isComplete
+//    }
+//
+//
+//
+//
+//    static let example = ToDoItem(name: "Etiam condimentum molestie erat, at egestas sem aliquam eget. Aliquam sodales, dolor eu fringilla rutrum, elit massa suscipit mauris, a lobortis eros est sit amet mi. Pellentesque et sagittis massa. Donec vitae ex ut nibh hendrerit sagittis nec eget nunc. Aliquam erat volutpat. Proin eu augue eget velit convallis facilisis. Vivamus vel ultrices est. Nulla a elit at enim eleifend scelerisque. Duis egestas lorem a nunc rhoncus, ac consectetur est posuere. Aenean et dignissim nunc, ac porta diam. Cras pretium a libero pretium blandit.",when: .now, priority: .normal, isComplete: false)
+//}
 

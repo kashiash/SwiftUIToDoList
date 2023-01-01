@@ -9,8 +9,11 @@ import SwiftUI
 
 struct NewToDoView: View {
     
+    
+    @Environment(\.managedObjectContext) var context
+    
     @Binding var isShow: Bool
-    @Binding var todoItems: [ToDoItem]
+
     
     @State var name: String
     @State var when: When
@@ -194,19 +197,33 @@ struct NewToDoView: View {
         .edgesIgnoringSafeArea(.bottom)
     }
     
-    
-    
     private func addTask(name: String, when: When, priority: Priority, isComplete: Bool = false) {
         
-        let task = ToDoItem(name: name, when: when, priority: priority, isComplete: isComplete)
-        todoItems.append(task)
+        let task = ToDoItem(context: context)
+        task.id = UUID()
+        task.name = name
+        task.priority = priority
+        task.when = when
+        task.isComplete = isComplete
+        
+        do {
+            try context.save()
+        } catch {
+            print(error)
+        }
     }
+    
+//    private func addTask(name: String, when: When, priority: Priority, isComplete: Bool = false) {
+//
+//        let task = ToDoItem(name: name, when: when, priority: priority, isComplete: isComplete)
+//        todoItems.append(task)
+//    }
 }
 
 
 struct NewToDoView_Previews: PreviewProvider {
     static var previews: some View {
-        NewToDoView(isShow: .constant(true), todoItems: .constant([]), name: "",when: .later, priority: .normal)
+        NewToDoView(isShow: .constant(true),  name: "Jakas pierdoła",when: .later, priority: .normal)
     }
 }
 
