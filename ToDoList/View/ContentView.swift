@@ -68,7 +68,7 @@ struct ContentView: View {
                         self.showNewTask = false
                     }
                 
-                NewToDoView(isShow: $showNewTask, todoItems: $todoItems, name: "", priority: .normal)
+                NewToDoView(isShow: $showNewTask, todoItems: $todoItems, name: "",when:.later, priority: .normal)
                     .transition(.move(edge: .bottom))
                     .animation(.interpolatingSpring(stiffness: 200.0, damping: 25.0, initialVelocity: 10.0), value: showNewTask)
             }

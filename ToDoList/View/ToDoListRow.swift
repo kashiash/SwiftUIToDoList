@@ -18,7 +18,8 @@ struct ToDoListRow: View {
                     .strikethrough(self.todoItem.isComplete, color: .black)
                     .bold()
                     .animation(.default)
-                
+                    
+                Image(systemName: self.todoItem.when.imageName()).foregroundColor(self.todoItem.when.color())
                 Spacer()
                 
                 Circle()
@@ -35,6 +36,8 @@ struct ToDoListRow: View {
         case .low: return .green
         }
     }
+    
+
 }
 
 struct ToDoListRow_Previews: PreviewProvider {

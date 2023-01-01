@@ -13,6 +13,7 @@ struct NewToDoView: View {
     @Binding var todoItems: [ToDoItem]
     
     @State var name: String
+    @State var when: When
     @State var priority: Priority
     @State var isEditing = false
     
@@ -43,11 +44,87 @@ struct NewToDoView: View {
                     self.isEditing = editingChanged
                     
                 })
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .padding(.bottom)
+                HStack{
+                    Text("When")
+                    Text(self.when.name)
+                    Image(systemName: self.when.imageName()).foregroundColor(self.when.color())
+                }  .font(.system(.subheadline, design: .rounded))
                     .padding(.bottom)
-                
+                HStack {
+                    VStack{
+                        
+                        Image(systemName: "clock.badge.questionmark")
+                        Text("Later")
+                        
+                    }
+                    .font(.system(.headline, design: .rounded))
+                    
+                    .padding(10)
+                    .background(when == .later ? Color.blue : Color(.systemGray4))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .onTapGesture {
+                        self.when = .later
+                    }
+                    VStack{
+                        Image(systemName: "calendar.badge.exclamationmark")
+                        Text("Today")
+                        
+                    }
+                    .font(.system(.headline, design: .rounded))
+                    .padding(10)
+                    .background(when == .today ? Color.green : Color(.systemGray4))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .onTapGesture {
+                        self.when = .today
+                    }
+                    
+                    VStack{
+                        Image(systemName: "clock.badge.exclamationmark")
+                        Text("Asap")
+                        
+                    }
+                    .font(.system(.headline, design: .rounded))
+                    .padding(10)
+                    .background(when == .asap ? Color.orange : Color(.systemGray4))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .onTapGesture {
+                        self.when = .asap
+                    }
+                    VStack{
+                        Image(systemName: "alarm.waves.left.and.right")
+                        Text("Now")
+
+                    }
+                    .font(.system(.headline, design: .rounded))
+                    .padding(10)
+                    .background(when == .now ? Color.red : Color(.systemGray4))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .onTapGesture {
+                        self.when = .now
+                    }
+                    VStack{
+                        Image(systemName:"clock.badge" )
+                        Text("Date")
+  
+                    }
+                    .font(.system(.headline, design: .rounded))
+                    .padding(10)
+                    .background(when == .date ? Color.teal : Color(.systemGray4))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .onTapGesture {
+                        self.when = .date
+                    }
+                }
+                .padding(.bottom, 30)
                 Text("Priority")
                     .font(.system(.subheadline, design: .rounded))
                     .padding(.bottom)
@@ -85,6 +162,8 @@ struct NewToDoView: View {
                 }
                 .padding(.bottom, 30)
                 
+                
+                
                 // Save button for adding the todo item
                 Button(action: {
                     
@@ -93,7 +172,7 @@ struct NewToDoView: View {
                     }
                     
                     self.isShow = false
-                    self.addTask(name: self.name, priority: self.priority)
+                    self.addTask(name: self.name,when: self.when, priority: self.priority)
                     
                 }) {
                     Text("Save")
@@ -115,9 +194,11 @@ struct NewToDoView: View {
         .edgesIgnoringSafeArea(.bottom)
     }
     
-    private func addTask(name: String, priority: Priority, isComplete: Bool = false) {
+    
+    
+    private func addTask(name: String, when: When, priority: Priority, isComplete: Bool = false) {
         
-        let task = ToDoItem(name: name, priority: priority, isComplete: isComplete)
+        let task = ToDoItem(name: name, when: when, priority: priority, isComplete: isComplete)
         todoItems.append(task)
     }
 }
@@ -125,7 +206,7 @@ struct NewToDoView: View {
 
 struct NewToDoView_Previews: PreviewProvider {
     static var previews: some View {
-        NewToDoView(isShow: .constant(true), todoItems: .constant([]), name: "", priority: .normal)
+        NewToDoView(isShow: .constant(true), todoItems: .constant([]), name: "",when: .later, priority: .normal)
     }
 }
 
